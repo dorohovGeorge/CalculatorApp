@@ -3,6 +3,8 @@ package com.example.calculatorapp.controller;
 import com.example.calculatorapp.model.Calculation;
 import com.example.calculatorapp.repos.CalculationRepo;
 import com.example.calculatorapp.service.CalcServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class CalculationController {
     @Autowired
     private CalcServiceImpl calcService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CalculationController.class);
 
     @GetMapping("/hello")
     public String hello() {
@@ -36,6 +40,14 @@ public class CalculationController {
                 calc.multiply();
                 break;
             case "division":
+                if(calc.getSecondNumber() == 0) {
+                    LOGGER.warn("Division on zero");
+                    calc.setFirstNumber(0.0);
+                    calc.setResult(0.0);
+                    calc.setResult(0.0);
+                    calc.setAction("Divide by null");
+                    break;
+                }
                 calc.division();
                 break;
         }
@@ -44,12 +56,12 @@ public class CalculationController {
     }
 
     @GetMapping("/calc")
-    public ResponseEntity<Long> read() {
+    public ResponseEntity<Double> read() {
         Calculation calc = this.calcService.read();
         if (calc == null) {
             throw new RuntimeException("Not found user");
         }
-        return new ResponseEntity<Long>(calc.getResult(), HttpStatus.OK);
+        return new ResponseEntity<Double>(calc.getResult(), HttpStatus.OK);
     }
 
     @PutMapping("/calc")
@@ -70,6 +82,10 @@ public class CalculationController {
                 calc.multiply();
                 break;
             case "division":
+                if(calc.getSecondNumber() == 0) {
+                    LOGGER.warn("Division on zero");
+                    break;
+                }
                 calc.division();
                 break;
         }
