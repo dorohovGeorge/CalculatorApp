@@ -24,7 +24,15 @@ public class CalcServiceImpl implements CalcService {
     @Override
     public boolean delete() {
         if (calculationRepo.existsById(1L)) {
-            calculationRepo.deleteById(1L);
+            Calculation tempCalc = calculationRepo.findById(1L).orElse(null);
+            if (tempCalc == null) {
+                return false;
+            }
+            tempCalc.setFirstNumber(0.0);
+            tempCalc.setSecondNumber(0.0);
+            tempCalc.setResult(0.0);
+            tempCalc.setAction("empty");
+            calculationRepo.save(tempCalc);
             return true;
         }
         return false;
