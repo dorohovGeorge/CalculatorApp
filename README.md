@@ -12,18 +12,18 @@ npm install
 npm run serve
 ```
 
-##Backend setup
+## Backend setup
 
 ```
 mvn clean package
 ```
 
-###Start app
+### Start app
 
 ```
 java -jar target/CalculatorApp-0.0.1-SNAPSHOT.jar
 ```
 
-#Design of app
+# Design of app
 
 ![img.png](img.png)
